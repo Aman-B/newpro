@@ -3,6 +3,7 @@ package com.bewtechnologies.newpro;
 import android.content.Intent;
 import android.gesture.GestureOverlayView;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private GestureOverlayView gesture;
      static int n=100;
     Bitmap gestureImg;
+    Uri imguri;
 
 
     @Override
@@ -72,8 +74,8 @@ public class MainActivity extends AppCompatActivity {
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     gestureImg.compress(Bitmap.CompressFormat.PNG, 100, bos);
                     byte[] bArray = bos.toByteArray();
-                    saveimg(gesture,gestureImg);
-                    gesture.setDrawingCacheEnabled(false);
+                    imguri=saveimg(gesture,gestureImg);
+                  //  gesture.setDrawingCacheEnabled(false);
                     Intent intent = new Intent(MainActivity.this, Activity2.class);
 
                     intent.putExtra("draw", bArray);
@@ -101,7 +103,42 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void saveimg(GestureOverlayView gesture, Bitmap b2) {
+    private void convertingImg() {
+
+        try {
+            n++;
+                 /*   Bitmap gestureImg = gesture.getGesture().toBitmap(100, 100,
+                            8, Color.WHITE);*/
+
+            gestureImg = gesture.getDrawingCache();
+                  /*  if(gestureImg==null)
+                    {
+                        gesture.setBackgroundColor(Color.WHITE);
+                        gestureImg = gesture.getGesture().toBitmap(100, 100,
+                                8, Color.BLACK);
+
+                    }*/
+            Log.i("Tag:", "gestureimg "+gestureImg);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            gestureImg.compress(Bitmap.CompressFormat.PNG, 100, bos);
+            byte[] bArray = bos.toByteArray();
+            imguri=saveimg(gesture,gestureImg);
+            //  gesture.setDrawingCacheEnabled(false);
+            Intent intent = new Intent(MainActivity.this, Activity2.class);
+
+            intent.putExtra("draw", bArray);
+            startActivity(intent);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(MainActivity.this, "No draw on the string",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
+
+    private Uri saveimg(GestureOverlayView gesture, Bitmap b2) {
         String name = "image"+n;
         String s="here : ";
         Bitmap bitmap = gesture.getDrawingCache();
@@ -136,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(),"file cant be saved : " +s,Toast.LENGTH_SHORT).show();
             }
             FileOutputStream ostream = new FileOutputStream(file);
-            b2.compress(Bitmap.CompressFormat.PNG, 100, ostream);
+             b2.compress(Bitmap.CompressFormat.PNG, 100, ostream);
             ostream.flush();
             ostream.close();
           /*  gesture.invalidate();*/
@@ -153,11 +190,13 @@ public class MainActivity extends AppCompatActivity {
         /* gesture.clearAnimation();
             gesture.clear(true);*/
             gesture.invalidate();
+            gesture.setDrawingCacheEnabled(false);
 
 
 
 
         }
+        return Uri.fromFile(file);
 
     }
 
@@ -181,6 +220,29 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
+        if(id== R.id.share)
+        {
+
+
+            convertingImg();
+
+
+
+
+            Toast.makeText(getApplicationContext(),"Saved image!",Toast.LENGTH_SHORT).show();
+
+            Intent shareIntent = new Intent();
+            shareIntent.setAction(Intent.ACTION_SEND);
+            shareIntent.putExtra(Intent.EXTRA_STREAM,imguri);
+            shareIntent.setType("image/png");
+            startActivity(Intent.createChooser(shareIntent,"Share it on :"));
+
+        }
+
+
         return super.onOptionsItemSelected(item);
     }
+
+
+
 }
