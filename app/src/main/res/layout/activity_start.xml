@@ -14,6 +14,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/pro2"
-        android:id="@+id/button3"
+        android:id="@+id/fblogin"
+        android:layout_gravity="center_horizontal" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New one"
+        android:id="@+id/button2"
         android:layout_gravity="center_horizontal" />
 </LinearLayout>

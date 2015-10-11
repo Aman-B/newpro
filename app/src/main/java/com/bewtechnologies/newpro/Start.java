@@ -15,8 +15,7 @@ import com.facebook.FacebookSdk;
  */
 public class Start extends AppCompatActivity implements View.OnClickListener {
 
-    Button das;
-    Button newp;
+    Button das,fb,newone;
 
 
 
@@ -25,11 +24,15 @@ public class Start extends AppCompatActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
         FacebookSdk.sdkInitialize(this.getApplicationContext());
+
         das= (Button) findViewById(R.id.das);
-        newp=(Button) findViewById(R.id.button3);
+        fb=(Button) findViewById(R.id.fblogin);
+        newone=(Button) findViewById(R.id.button2);
+
 
         das.setOnClickListener(this);
-        newp.setOnClickListener(this);
+        fb.setOnClickListener(this);
+        newone.setOnClickListener(this);
     }
 
 
@@ -58,9 +61,16 @@ public class Start extends AppCompatActivity implements View.OnClickListener {
                 startActivity(i);
                 break;
 
-            case R.id.button3:
+            case R.id.fblogin:
                  Intent i1 = new Intent(this,fblogin.class);
                  startActivity(i1);
+                 break;
+
+            //TODO: put newone's case here:
+
+            case R.id.button2:
+                 Intent i2 = new Intent(this,moveImage.class);
+                 startActivity(i2);
                  break;
 
             default:
